@@ -47,4 +47,4 @@ ffmpeg -y -i "$1" -vf scale=640:-1 -fs ${MAX_VIDEO_SIZE} -b:v 512k \
 ffmpeg -y -i "$1" -vf scale=640:-1 -fs ${MAX_VIDEO_SIZE} -b:v 512k \
   -minrate 256k -maxrate 742k -tile-columns 1 -g 240 -threads 4 \
   -quality good -crf 34 -c:v libvpx-vp9 -c:a libopus \
-  -pass 2 -speed 4 -y "$1-compressed-640-low.webm"
+  -pass 2 -speed 2 -y "$1-compressed-640-low.webm"

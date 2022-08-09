@@ -25,4 +25,4 @@ ffmpeg -y -i "$1" -vf scale=1920:-1 -fs ${MAX_VIDEO_SIZE} -b:v 1800k \
 ffmpeg -y -i "$1" -vf scale=1920:-1 -fs ${MAX_VIDEO_SIZE} -b:v 1800k \
   -minrate 900k -maxrate 2610k -tile-columns 3 -g 240 -threads 8 \
   -quality good -crf 31 -c:v libvpx-vp9 -an \
-  -pass 2 -speed 4 -y "$1-compressed-1920.webm"
+  -pass 2 -speed 2 -y "$1-compressed-1920.webm"
