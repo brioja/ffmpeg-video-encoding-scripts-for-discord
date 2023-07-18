@@ -2,15 +2,8 @@
 
 set -x
 
-#Good
-#MAX_VIDEO_SIZE="8000000"
 MAX_VIDEO_SIZE="7800000"
-
-
-# Large
-#MAX_VIDEO_SIZE="8300000"
-
-# Check argument
+TRIM_FINAL_SECONDS="2"
 
 if [[ "$1" == "" ]]; then
 	echo "Error: No video file selected"
@@ -18,15 +11,10 @@ if [[ "$1" == "" ]]; then
 	exit
 fi
 
-#ffmpeg -ss 00:00:00 -y -i "$1" -vf scale=1920:-1,fps=15 -fs ${MAX_VIDEO_SIZE} -b:v 900k \
-#  -minrate 450k -maxrate 1305k -tile-columns 2 -g 240 -threads 8 \
-#  -quality good -crf 31 -c:v libvpx-vp9 -an \
-#  -pass 1 -speed 4 "$1-compressed-1920_15fps.webm" && \
-#ffmpeg -ss 00:00:00 -y -i "$1" -vf scale=1920:-1,fps=15 -fs ${MAX_VIDEO_SIZE} -b:v 900k \
-#  -minrate 450k -maxrate 1305k -tile-columns 3 -g 240 -threads 8 \
-#  -quality good -crf 31 -c:v libvpx-vp9 -an \
-#  -pass 2 -speed 2 -y "$1-compressed-1920_15fps.webm"
+duration=`ffmpeg.ffprobe -v error -show_entries format=duration -of csv=p=0 ${1}`
+duration=`echo ${duration} - ${TRIM_FINAL_SECONDS} | bc`
 
+TITLE=${1%.*}
 
-ffmpeg -y -i "$1" -c:v libx264 -vf scale=1920:-1,fps=15 -fs ${MAX_VIDEO_SIZE} -b:v 900k -pass 1 -an -f null /dev/null
-ffmpeg -i "$1" -c:v libx264 -vf scale=1920:-1,fps=15 -fs ${MAX_VIDEO_SIZE} -b:v 900k -pass 2 -an "$1-compressed-1920_15fps.mp4" 
+ffmpeg -y -i "$1" -movflags +faststart -c:v libx264 -preset veryslow -ss 00:00:01 -to $duration -vf scale=1920:-1,fps=15 -tune animation -fs ${MAX_VIDEO_SIZE} -metadata title="${TITLE}" -b:v 900k -to $duration -pass 1 -an -f null /dev/null
+ffmpeg -y -i "$1" -movflags +faststart -c:v libx264 -preset veryslow -ss 00:00:01 -to $duration -vf scale=1920:-1,fps=15 -tune animation -fs ${MAX_VIDEO_SIZE} -metadata title="${TITLE}" -b:v 900k -pass 2 -an "$1-compressed-1920_15fps.mp4" 

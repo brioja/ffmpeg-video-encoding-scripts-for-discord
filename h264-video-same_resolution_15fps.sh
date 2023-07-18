@@ -28,7 +28,7 @@ fi
 #  -pass 2 -speed 2 -y "$1-compressed-1920_15fps.webm"
 
 
-ffmpeg -y -i "$1" -c:v libx264 -vf fps=15 -fs ${MAX_VIDEO_SIZE} -an "$1-same_resolution_15fps.mp4" 
+ffmpeg -y -i "$1" -c:v libx264 -preset veryslow -vf fps=15 -fs ${MAX_VIDEO_SIZE} -an "$1-same_resolution_15fps.mp4" 
 
 #ffmpeg -y -i "$1" -c:v libx264 -vf fps=15 -fs ${MAX_VIDEO_SIZE} -pass 1 -an -f null /dev/null
 #ffmpeg -y -i "$1" -c:v libx264 -vf fps=15 -fs ${MAX_VIDEO_SIZE} -pass 2 -an "$1-same_resolution_15fps.mp4" 
